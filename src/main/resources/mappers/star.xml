@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Star">
+
+    <resultMap id="result" type="Star">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="coorX" column="coor_x"/>
+        <result property="coorY" column="coor_y"/>
+        <result property="typeId" column="type_id"/>
+        <association property="discoverer" column="discoverer_id" javaType="Discoverer" select="selectDiscoverer"/>
+    </resultMap>
+
+    <select id="selectDiscoverer" parameterType="int" resultType="Discoverer">
+        SELECT * FROM core_discoverers WHERE id=#{discoverer_id};
+    </select>
+
+    <select id="selectAll" resultMap="result">
+        SELECT * FROM core_stars;
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="result">
+        SELECT * FROM core_stars WHERE id=#{id};
+    </select>
+
+    <insert id="insert" parameterType="Star">
+        INSERT INTO core_stars(name, coor_x, coor_y, type_id, discoverer_id) VALUES (#{name}, #{coorX}, #{coorY}, #{type.id}, #{discoverer.id});
+    </insert>
+
+    <update id="update" parameterType="Star">
+        UPDATE core_stars SET
+        name=#{name},
+        coor_x=#{coorX},
+        coor_y=#{coorY},
+        type_id=#{type.id},
+        discoverer_id=#{discoverer.id}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM core_stars WHERE id=#{id};
+    </delete>
+
+</mapper>

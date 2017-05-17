@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/my.css"/>
+    <script src="/js/jquery.js"/>
+    <script src="/js/bootstrap.js"/>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-12">
+            <h2>Hi!</h2>
+            <h3>This system allows you to view, add, change, delete information about stars</h3>
+        </div>
+        <div class="col-md-12" style="margin-top: 40px;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">List of stars</h3>
+                </div>
+                <div id="result-block" style="display: none;"/>
+            </div>
+        </div>
+    </div>
+    <div id="loader"/>
+    <div id="star-form-modal" style="display: none;"/>
+<script>
+    $(document).ready(updateStarList);
+    function updateStarList() {
+        $("#loader").show();
+        $.get('/star-list', function (data) {
+            $("#loader").hide();
+            $("#result-block").replaceWith(data);
+        });
+    }
+</script>
+</body>
+</html>

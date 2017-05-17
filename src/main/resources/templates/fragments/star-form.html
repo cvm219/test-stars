@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <div id="star-form-modal" th:fragment="modalForm" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="star-header-text" class="modal-title" th:text="${modalTitle}"/>
+                    <h4 id="discoverer-header-text" class="modal-title" style="display: none;">Add discoverer</h4>
+                </div>
+                <form id="star-add-form" th:action="@{/star/edit}" method="post" class="modal-body" th:object="${model}">
+                    <input type="hidden" th:field="*{id}" />
+                    <div class="form-group">
+                        <label th:for="*{name}">Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label th:for="*{coorX}">Coor 1</label>
+                        <input type="text" th:field="*{coorX}" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label th:for="*{coorY}">Coor 2</label>
+                        <input type="text" th:field="*{coorY}" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label th:for="*{type}">Class</label>
+                        <select th:field="*{type}" class="form-control">
+                            <option th:value="null">- Select class -</option>
+                            <option th:each="type : ${types}" th:value="${type.id}" th:text="${type.name}"/>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label th:for="*{discoverer}">Discoverer</label>
+                        <div class="input-group">
+                            <select th:field="*{discoverer}" class="form-control">
+                                <option th:value="null">- Select discoverer -</option>
+                                <option th:each="discoverer : ${discoverers}" th:value="${discoverer.id}" th:text="${discoverer.name}"/>
+                            </select>
+                            <span class="input-group-addon" onclick="addDiscoverer();" style="cursor: pointer;">
+                                <label class="glyphicon glyphicon-plus" style="cursor: pointer;" />
+                            </span>
+                        </div>
+                    </div>
+                    <p id="alert-star-message" class="my-alert-danger" style="display: none;"></p>
+                    <button type="button" class="btn btn-primary" onclick="submitStarForm();">Sumbit</button>
+                </form>
+                <form id="discoverer-add-form" method="post" class="modal-body" style="display: none;"
+                      onkeypress="return event.keyCode != 13;">
+                    <div class="form-group">
+                        <label for="discoverer-name">Name</label>
+                        <input type="text" id="discoverer-name" name="discoverer-name" class="form-control" autocomplete="off"/>
+                    </div>
+                    <p id="alert-discoverer-message" class="my-alert-danger" style="display: none;"></p>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="submitDiscovererForm();">Sumbit</button>
+                        <button type="button" class="btn btn-warning" onclick="cancelAddDiscoverer();" style="margin-left: 10px;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            function submitStarForm() {
+                var str = $("#star-add-form").serialize();
+                $.ajax({
+                    type: "post",
+                    data: str,
+                    url: "/star/edit",
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#loader").show();
+                        $("#alert-star-message").hide();
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            $("#star-form-modal").modal("hide");
+                            updateStarList();
+                        } else {
+                            $("#loader").hide();
+                            $("#alert-star-message").show();
+                            $("#alert-star-message").html(data.message);
+                        }
+                    }
+                });
+            }
+            function submitDiscovererForm() {
+                var str = $("#discoverer-add-form").serialize();
+                $.ajax({
+                    type: "post",
+                    data: str,
+                    url: "/discoverer/add",
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#loader").show();
+                        $("#alert-discoverer-message").hide();
+                    },
+                    success: function (data) {
+                        $("#loader").hide();
+                        if (data.success) {
+                            $("#star-add-form").show()
+                            $("#discoverer-add-form").hide();
+                            $("#star-add-form #discoverer").append($('<option/>', {
+                                value: data.message,
+                                text: $("#discoverer-name").val()
+                            }));
+                            $("#discoverer-name").val("");
+                        } else {
+                            $("#alert-discoverer-message").show();
+                            $("#alert-discoverer-message").html(data.message);
+                        }
+                    }
+                });
+            }
+            function addDiscoverer() {
+                $("#star-add-form").hide();
+                $("#star-header-text").hide();
+                $("#discoverer-add-form").show();
+                $("#discoverer-header-text").show();
+            }
+            function cancelAddDiscoverer() {
+                $("#discoverer-add-form").hide();
+                $("#discoverer-header-text").hide();
+                $("#star-add-form").show();
+                $("#star-header-text").show();
+            }
+        </script>
+    </div>
+</body>
+</html>

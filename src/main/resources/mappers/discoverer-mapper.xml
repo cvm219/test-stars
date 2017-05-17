@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Discoverer">
+
+    <resultMap id="result" type="Discoverer">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="result">
+        SELECT * FROM core_discoverers;
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="result">
+        SELECT * FROM core_discoverers WHERE id=#{id};
+    </select>
+
+    <select id="selectByName" parameterType="string" resultMap="result">
+        SELECT * FROM core_discoverers WHERE name=#{name};
+    </select>
+
+    <insert id="insert" parameterType="Discoverer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO core_discoverers (name) VALUES (#{name});
+    </insert>
+
+</mapper>
