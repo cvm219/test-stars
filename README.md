@@ -40,3 +40,5 @@ mvn spring-boot:run
 ```
 
 Result you can see on http://localhost:8080/
+
+To enter the system use "username" as login and "password" as password (without quotes)
