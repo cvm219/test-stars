@@ -18,3 +18,25 @@ Download archive
 ```
 git clone git@github.com:cvm219/test-stars.git
 ```
+
+Before start, create database named "stars" in your MySQL and import database structure from "stars.sql"
+
+Edit the following rows in \src\main\resources\mybatis-config.xml with your MySQL parameters
+```
+<property name="url" value="jdbc:mysql://localhost/stars?useUnicode=true&amp;characterEncoding=UTF8&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
+<property name="username" value="root"/>
+<property name="password" value=""/>
+```
+To build the project run
+
+```
+mvn clean install
+```
+
+Then run project
+
+```
+mvn spring-boot:run
+```
+
+Result you can see on http://localhost:8080/
