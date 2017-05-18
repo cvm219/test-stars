@@ -23,11 +23,6 @@ public class Star {
 
     private Discoverer discoverer;
 
-    @PostConstruct
-    private void bindStarType() {
-        type = new StarTypeDAO().selectById(typeId);
-    }
-
     public Integer getId() {
         return id;
     }
